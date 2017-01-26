@@ -6,10 +6,13 @@ library(ggplot2)
 library(dplyr)
 library(readxl)
 library(tidyr)
+library(readr)
+library(lubridate)
 
 # data in ----------------------------------------------------------------
-fame.in <- read_excel("~/Documents/GitHub/FAME_Data/FAMES_Trial.xlsx")
+fame.in <- read_csv("~/Documents/GitHub/FAME_Data/MEAT_2015a.csv")
 fame.in <- fame.in[,-3]
+colnames(fame.in)[1] <- "SAMPLE_NUMBER"
 
 # Filter -----------------------------------------------------------------
 
@@ -26,10 +29,16 @@ FA <- c("C:4.0", "C:6.0","C:8.0","C:10.0","C:12.0","C:14.0","C:16.0","C:16.1w7ci
 
 fame.in3 <- fame.in2 %>% 
         filter(REPORTED_NAME %in% FA)
+fame.in3$ENTRY <- as.numeric(fame.in3$ENTRY)
 
 fame.library <- spread(fame.in3, REPORTED_NAME, ENTRY)
+fame.library$LOGIN_DATE <- dmy_hm(fame.library$LOGIN_DATE)
 
 fame.library <- fame.library %>% 
         mutate(fat = rowSums(fame.library[,c(8:22)]))
 
+# Load database -------------------------------------------------------
+fame.db <- read_csv("~/Documents/GitHub/FAME_Data/Database.csv")
+fame.db <- fame.db[,-1]
+fame.library <- rbind(fame.library, fame.db)
 write.csv(fame.library, "~/Documents/GitHub/FAME_Data/Database.csv")
