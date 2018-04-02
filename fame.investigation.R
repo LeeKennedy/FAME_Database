@@ -10,7 +10,7 @@ library(readr)
 library(lubridate)
 
 # data in ----------------------------------------------------------------
-fame.in <- read_csv("~/Documents/GitHub/FAME_Data/MEAT_2015a.csv")
+fame.in <- read_csv("~/Documents/GitHub/FAME_Data/Oils_2015b.csv")
 fame.in <- fame.in[,-3]
 colnames(fame.in)[1] <- "SAMPLE_NUMBER"
 
